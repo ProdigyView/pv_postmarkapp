@@ -16,8 +16,23 @@ ProdigyView is an open-source framework for building applications. Unlike many f
 define('POSTMARK_API_KEY', 'xxx-xxx-xx-xxxx');
 PVLibraries::addLibrary('pv_postmarkapp');
 
+/**
+Use explicit loading to ensure that the design patterns are included
+PVLibraries::addLibrary('pv_postmarkapp', array('explicit_load' => true));
+*/
+
 $postmark = new Postmarkapp();
 </code></pre>
 
-##Ovveridding PVMail::sendMail
-Postmarkapp for ProdigyView comes with an adapter that allows overriding of the regular mail function in ProdigyView. The adapter will always use Postmarkapp for sending an email.
+##Overriding PVMail::sendMail
+Postmarkapp for ProdigyView comes with an adapter that allows overriding of the regular mail function in ProdigyView. This mean you will never have to instantiate an Postmarkapp object, but just you the regular PVMail::sendEmail(). The adapter will always use Postmarkapp for sending an email. This is designed to be loosely coupled.
+
+#Observer
+The method 'send' has a observer that will be used to attach functionality after email has attempted to be sent. Using the obsever, you will get a dump of the data that attempted to be sent and the response data return from curl.
+
+###Example
+
+<pre><code>
+Postmarkapp::addObserver('Postmarkapp::send', 'read_closure', function($args, $feedback) {
+//Execution of code here
+}, array('type' => 'closure'));
