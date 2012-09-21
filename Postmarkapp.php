@@ -237,7 +237,7 @@ class Postmarkapp extends PVStaticInstance {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this -> _mail));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(utf8_encode($this -> _mail)));
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 		$data = curl_exec($ch);
