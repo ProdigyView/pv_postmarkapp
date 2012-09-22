@@ -212,6 +212,8 @@ class Postmarkapp extends PVStaticInstance {
 	 * @access
 	 */
 	public function send() {
+		$this -> _convertFormat();
+		
 		$data = $this -> _sendCurl();
 		
 		$this->_notify('Postmarkapp::send', $this -> _mail, $data);
@@ -237,13 +239,31 @@ class Postmarkapp extends PVStaticInstance {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(utf8_encode($this -> _mail)));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this -> _mail));
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 		$data = curl_exec($ch);
 		curl_close($ch);
 		return $data;
 		
+	}
+	
+	/**
+	 * Ensures that all string data entered into Postmark is UTF-8 format. Postmarkapp only allows utf-8
+	 * data to be sent.
+	 * 
+	 * @return void
+	 * @access protected
+	 */
+	protected function _convertFormat($format = 'utf-8') {
+		
+		if(is_array($this -> _mail)){
+			foreach($this -> _mail as $key => $value) {
+				if(is_string($value)) {
+					$this -> _mail[$key] = utf8_encode($value);
+				}
+			}//end foreach
+		}
 	}
 	
 	/**
